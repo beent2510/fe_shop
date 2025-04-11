@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
+import 'product_detail_screen.dart';
+
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
 
-  // Hàm tính giá ưu đãi theo giờ
   String getDiscountedPrice(String originalPrice) {
     final now = DateTime.now();
     final hour = now.hour;
-
-    // Chuyển '200.000đ' -> 200000
     final rawPrice = int.tryParse(originalPrice.replaceAll('.', '').replaceAll('đ', '')) ?? 0;
 
     double discount = 0.0;
     if (hour >= 6 && hour < 10) {
-      discount = 0.2; // Giảm 20%
+      discount = 0.2;
     } else if (hour >= 20 && hour < 22) {
-      discount = 0.1; // Giảm 10%
+      discount = 0.1;
     }
 
     final discountedPrice = rawPrice * (1 - discount);
@@ -60,8 +59,7 @@ class HomeTab extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const CartScreen()),
-  );
-              // Xử lý khi nhấn giỏ hàng
+              );
             },
           ),
         ],
@@ -69,7 +67,6 @@ class HomeTab extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         children: [
-          // Banner
           Container(
             height: 180,
             decoration: BoxDecoration(
@@ -80,15 +77,11 @@ class HomeTab extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: 20),
-          const Text(
-            'Danh mục',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          const Text('Danh mục', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
 
-          // Hàng 1
+          // Categories
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -103,8 +96,6 @@ class HomeTab extends StatelessWidget {
           ),
 
           const SizedBox(height: 10),
-
-          // Hàng 2
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -119,10 +110,7 @@ class HomeTab extends StatelessWidget {
           ),
 
           const SizedBox(height: 20),
-          const Text(
-            'Ưu đãi theo giờ ⏰',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          const Text('Ưu đãi theo giờ ⏰', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
 
           GridView.count(
@@ -133,16 +121,13 @@ class HomeTab extends StatelessWidget {
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
             children: [
-              _buildProductItem('assets/hoa1.jpg', 'Hoa hồng khuyến mãi', getDiscountedPrice('200.000đ')),
-              _buildProductItem('assets/hoa2.jpg', 'Lan ưu đãi', getDiscountedPrice('350.000đ')),
+              _buildProductItem(context, 'assets/hoa1.jpg', 'Hoa hồng khuyến mãi', getDiscountedPrice('200.000đ')),
+              _buildProductItem(context, 'assets/hoa2.jpg', 'Lan ưu đãi', getDiscountedPrice('350.000đ')),
             ],
           ),
 
           const SizedBox(height: 20),
-          const Text(
-            'Sản phẩm mới',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          const Text('Sản phẩm mới', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
 
           GridView.count(
@@ -153,10 +138,10 @@ class HomeTab extends StatelessWidget {
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
             children: [
-              _buildProductItem('assets/hoa1.jpg', 'Bó hoa hồng đỏ', '200.000đ'),
-              _buildProductItem('assets/hoa2.jpg', 'Chậu lan trắng', '350.000đ'),
-              _buildProductItem('assets/hoa3.jpg', 'Bó hoa ly vàng', '250.000đ'),
-              _buildProductItem('assets/hoa4.jpg', 'Hoa tulip Hà Lan', '300.000đ'),
+              _buildProductItem(context, 'assets/hoa1.jpg', 'Bó hoa hồng đỏ', '200.000đ'),
+              _buildProductItem(context, 'assets/hoa2.jpg', 'Chậu lan trắng', '350.000đ'),
+              _buildProductItem(context, 'assets/hoa3.jpg', 'Bó hoa ly vàng', '250.000đ'),
+              _buildProductItem(context, 'assets/hoa4.jpg', 'Hoa tulip Hà Lan', '300.000đ'),
             ],
           ),
         ],
@@ -180,49 +165,63 @@ class HomeTab extends StatelessWidget {
     );
   }
 
-  Widget _buildProductItem(String image, String title, String price) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade100,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade300,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.asset(image, height: 120, width: double.infinity, fit: BoxFit.cover),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(price, style: const TextStyle(color: Colors.redAccent)),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.shopping_cart, size: 16),
-              label: const Text('Thêm'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(35),
-              ),
+  Widget _buildProductItem(BuildContext context, String image, String title, String price) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+              image: image,
+              title: title,
+              price: price,
             ),
           ),
-        ],
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade100,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.asset(image, height: 120, width: double.infinity, fit: BoxFit.cover),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(price, style: const TextStyle(color: Colors.redAccent)),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.shopping_cart, size: 18),
+                label: const Text('Thêm'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  minimumSize: const Size(double.infinity, 36),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
