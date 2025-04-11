@@ -80,7 +80,6 @@ class HomeTab extends StatelessWidget {
           const SizedBox(height: 20),
           const Text('Danh mục', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-
           // Categories
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -94,7 +93,6 @@ class HomeTab extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -108,11 +106,9 @@ class HomeTab extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
           const Text('Ưu đãi theo giờ ⏰', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-
           GridView.count(
             crossAxisCount: 2,
             childAspectRatio: 0.75,
@@ -125,11 +121,9 @@ class HomeTab extends StatelessWidget {
               _buildProductItem(context, 'assets/hoa2.jpg', 'Lan ưu đãi', getDiscountedPrice('350.000đ')),
             ],
           ),
-
           const SizedBox(height: 20),
           const Text('Sản phẩm mới', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-
           GridView.count(
             crossAxisCount: 2,
             childAspectRatio: 0.75,
@@ -205,20 +199,6 @@ class HomeTab extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(price, style: const TextStyle(color: Colors.redAccent)),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart, size: 18),
-                label: const Text('Thêm'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: const Size(double.infinity, 36),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
             ),
           ],
         ),

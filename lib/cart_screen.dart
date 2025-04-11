@@ -1,6 +1,52 @@
 import 'package:flutter/material.dart';
 import 'checkout_screen.dart';
 
+class CartItem {
+  final String image;
+  final String title;
+  final int price;
+  int quantity;
+
+  CartItem({
+    required this.image,
+    required this.title,
+    required this.price,
+    this.quantity = 1,
+  });
+
+  int get totalPrice => price * quantity;
+}
+
+class CartModel {
+  static final List<CartItem> _cartItems = [];
+
+  static List<CartItem> get items => _cartItems;
+
+  static void addItem(CartItem newItem) {
+    final index = _cartItems.indexWhere((item) => item.title == newItem.title);
+    if (index != -1) {
+      _cartItems[index].quantity += newItem.quantity;
+    } else {
+      _cartItems.add(newItem);
+    }
+  }
+
+  static void removeItem(int index) {
+    _cartItems.removeAt(index);
+  }
+
+  static void increaseQty(int index) {
+    _cartItems[index].quantity++;
+  }
+
+  static void decreaseQty(int index) {
+    if (_cartItems[index].quantity > 1) {
+      _cartItems[index].quantity--;
+    }
+  }
+
+  static int get totalPrice => _cartItems.fold(0, (sum, item) => sum + item.totalPrice);
+}
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -10,35 +56,10 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final List<CartItem> _cartItems = [
-    CartItem(image: 'assets/hoa1.jpg', title: 'Bó hoa hồng đỏ', price: 200000, quantity: 1),
-    CartItem(image: 'assets/hoa2.jpg', title: 'Chậu lan trắng', price: 350000, quantity: 1),
-  ];
-
-  int get _totalPrice => _cartItems.fold(0, (sum, item) => sum + item.totalPrice);
-
-  void _increaseQty(int index) {
-    setState(() {
-      _cartItems[index].quantity++;
-    });
-  }
-
-  void _decreaseQty(int index) {
-    setState(() {
-      if (_cartItems[index].quantity > 1) {
-        _cartItems[index].quantity--;
-      }
-    });
-  }
-
-  void _removeItem(int index) {
-    setState(() {
-      _cartItems.removeAt(index);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final cartItems = CartModel.items;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       appBar: AppBar(
@@ -46,14 +67,14 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: Colors.redAccent,
         elevation: 0,
       ),
-      body: _cartItems.isEmpty
+      body: cartItems.isEmpty
           ? const Center(child: Text('Giỏ hàng của bạn đang trống'))
           : ListView.builder(
               padding: const EdgeInsets.all(12),
-              itemCount: _cartItems.length,
+              itemCount: cartItems.length,
               itemBuilder: (context, index) => _buildCartItem(index),
             ),
-      bottomNavigationBar: _cartItems.isEmpty
+      bottomNavigationBar: cartItems.isEmpty
           ? null
           : Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -71,7 +92,7 @@ class _CartScreenState extends State<CartScreen> {
                     children: [
                       const Text('Tổng cộng:', style: TextStyle(fontSize: 18)),
                       Text(
-                        '${_totalPrice.toString()}đ',
+                        '${CartModel.totalPrice}đ',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent),
                       ),
                     ],
@@ -98,7 +119,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buildCartItem(int index) {
-    final item = _cartItems[index];
+    final item = CartModel.items[index];
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -119,45 +140,42 @@ class _CartScreenState extends State<CartScreen> {
             const SizedBox(height: 4),
             Text(
               '${item.price}đ x ${item.quantity} = ${item.totalPrice}đ',
-              style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Row(
               children: [
                 IconButton(
+                  onPressed: () {
+                    setState(() {
+                      CartModel.decreaseQty(index);
+                    });
+                  },
                   icon: const Icon(Icons.remove_circle_outline),
-                  onPressed: () => _decreaseQty(index),
                 ),
-                Text(item.quantity.toString()),
+                Text('${item.quantity}', style: const TextStyle(fontSize: 16)),
                 IconButton(
+                  onPressed: () {
+                    setState(() {
+                      CartModel.increaseQty(index);
+                    });
+                  },
                   icon: const Icon(Icons.add_circle_outline),
-                  onPressed: () => _increaseQty(index),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      CartModel.removeItem(index);
+                    });
+                  },
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
                 ),
               ],
             ),
           ],
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-          onPressed: () => _removeItem(index),
-        ),
       ),
     );
   }
-}
-
-class CartItem {
-  final String image;
-  final String title;
-  final int price;
-  int quantity;
-
-  CartItem({
-    required this.image,
-    required this.title,
-    required this.price,
-    this.quantity = 1,
-  });
-
-  int get totalPrice => price * quantity;
 }

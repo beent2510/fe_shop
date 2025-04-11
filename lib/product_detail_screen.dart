@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'cart_screen.dart';
 import 'checkout_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -82,7 +83,16 @@ class ProductDetailScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // TODO: thêm vào giỏ hàng
+                            final item = CartItem(
+                              image: image,
+                              title: title,
+                              price: int.tryParse(price.replaceAll('.', '').replaceAll('đ', '')) ?? 0,
+                              quantity: 1,
+                            );
+                            CartModel.addItem(item);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Đã thêm vào giỏ hàng')),
+                            );
                           },
                           icon: const Icon(Icons.shopping_cart),
                           label: const Text("Thêm vào giỏ", style: TextStyle(fontSize: 14)),
@@ -122,4 +132,3 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 }
- // Import your CheckoutScreen here
