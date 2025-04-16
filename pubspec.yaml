@@ -17,6 +17,9 @@ dev_dependencies:
   provider: ^6.1.0
   flutter_test:
     sdk: flutter
+  fl_chart: ^0.63.0
+  dio: ^5.2.0
+  json_serializable: ^6.6.0
   flutter_lints: ^5.0.0
 
 flutter:
